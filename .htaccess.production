@@ -1,0 +1,22 @@
+# Root .htaccess for Production
+# Redirect all requests to public folder
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirect to public folder
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Block access to sensitive directories
+<IfModule mod_rewrite.c>
+    RewriteRule ^app/ - [F,L]
+    RewriteRule ^writable/ - [F,L]
+    RewriteRule ^tests/ - [F,L]
+    RewriteRule ^vendor/ - [F,L]
+</IfModule>
+
+# Deny access to sensitive files
+<FilesMatch "^(\.env|\.gitignore|composer\.(json|lock)|phpunit\.xml\.dist|README\.md)$">
+    Require all denied
+</FilesMatch>

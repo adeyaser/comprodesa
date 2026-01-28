@@ -1,0 +1,56 @@
+# Environment files - PENTING: jangan commit file .env dengan kredensial!
+.env
+.env.local
+.env.*.local
+
+# CodeIgniter 4 basic ignores
+writable/*
+!writable/index.html
+!writable/.gitkeep
+
+# Vendor dependencies
+vendor/
+
+# User uploads/media (ignore content but keep folder if needed)
+public/uploads/*
+!public/uploads/.gitkeep
+!public/uploads/gallery/.gitkeep
+!public/uploads/logo/.gitkeep
+!public/uploads/news/.gitkeep
+!public/uploads/tourism/.gitkeep
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# PHPUnit and testing
+phpunit.xml
+tests/_output/*
+tests/_support/_generated/*
+build/logs/*
+
+# Logs
+*.log
+
+# Cache
+*.cache
+
+# Backup files
+*.bak
+*.backup
+*.sql
+
+# Composer
+composer.phar
+
+# Node (jika ada)
+node_modules/
+npm-debug.log
+
+# Debug
+.phpunit.result.cache

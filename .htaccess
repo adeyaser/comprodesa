@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /compro_desa/
+    RewriteCond %{REQUEST_URI} !^/compro_desa/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

@@ -1,62 +1,53 @@
 <?php
 /**
- * MIGRATION RUNNER
- * ================
- * Jalankan file ini SEKALI untuk setup database di production
+ * MIGRATION RUNNER - Simple Version
+ * Akses: https://kalibaru.my.id/run_migrate.php?key=kalibaru2026
  * HAPUS FILE INI SETELAH SELESAI!
- * 
- * Akses: https://kalibaru.my.id/run_migrate.php
  */
 
-// Security check - hapus baris ini jika tidak bisa akses
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Security check
 $secret = $_GET['key'] ?? '';
 if ($secret !== 'kalibaru2026') {
     die('Unauthorized. Akses: run_migrate.php?key=kalibaru2026');
 }
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-// Boot CodeIgniter
-$paths = new \Config\Paths();
-require_once SYSTEMPATH . 'bootstrap.php';
-
-$app = \Config\Services::codeigniter();
-$app->initialize();
-
-echo "<!DOCTYPE html><html><head><title>Migration Runner</title>";
-echo "<style>body{font-family:monospace;padding:20px;background:#1e1e1e;color:#0f0;}</style></head><body>";
-echo "<h2>🚀 Database Migration Runner</h2><hr>";
+echo "<pre>";
+echo "=== MIGRATION RUNNER ===\n\n";
 
 try {
-    // Run migrations
-    echo "<h3>1. Running Migrations...</h3>";
-    $migrate = \Config\Services::migrations();
+    echo "1. Loading autoloader...\n";
+    require_once __DIR__ . '/../vendor/autoload.php';
+    echo "   OK\n\n";
     
-    if ($migrate->latest()) {
-        echo "<p style='color:#0f0;'>✅ Migrations completed successfully!</p>";
-    } else {
-        echo "<p style='color:#ff0;'>⚠️ No new migrations to run.</p>";
-    }
+    echo "2. Loading Paths...\n";
+    $paths = new \Config\Paths();
+    echo "   OK\n\n";
     
-    // Show migration status
-    echo "<h3>2. Migration Status:</h3><pre>";
+    echo "3. Loading Bootstrap...\n";
+    require_once SYSTEMPATH . 'bootstrap.php';
+    echo "   OK\n\n";
+    
+    echo "4. Connecting to database...\n";
     $db = \Config\Database::connect();
-    $query = $db->table('migrations')->get();
-    foreach ($query->getResult() as $row) {
-        echo "✓ " . $row->class . "\n";
-    }
-    echo "</pre>";
+    echo "   Driver: " . $db->getPlatform() . "\n";
+    echo "   Database: " . $db->getDatabase() . "\n";
+    echo "   OK\n\n";
     
-    // Check if users table has data
-    echo "<h3>3. Checking Users Table...</h3>";
-    $userModel = new \App\Models\UserModel();
-    $userCount = $userModel->countAll();
+    echo "5. Running migrations...\n";
+    $migrate = \Config\Services::migrations();
+    $migrate->latest();
+    echo "   OK\n\n";
+    
+    echo "6. Checking users table...\n";
+    $userCount = $db->table('users')->countAll();
+    echo "   Found: {$userCount} users\n\n";
     
     if ($userCount == 0) {
-        echo "<p style='color:#ff0;'>⚠️ No users found. Creating default admin...</p>";
-        
-        // Create default admin
-        $userModel->insert([
+        echo "7. Creating default admin...\n";
+        $db->table('users')->insert([
             'username' => 'admin',
             'password' => password_hash('admin123', PASSWORD_DEFAULT),
             'full_name' => 'Administrator',
@@ -64,24 +55,22 @@ try {
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
-        
-        echo "<p style='color:#0f0;'>✅ Default admin created!</p>";
-        echo "<p>Username: <strong>admin</strong></p>";
-        echo "<p>Password: <strong>admin123</strong></p>";
-    } else {
-        echo "<p style='color:#0f0;'>✅ Found {$userCount} user(s) in database.</p>";
+        echo "   Admin created!\n";
+        echo "   Username: admin\n";
+        echo "   Password: admin123\n\n";
     }
     
-    echo "<hr>";
-    echo "<h3 style='color:#f00;'>⚠️ PENTING: HAPUS FILE INI SETELAH SELESAI!</h3>";
-    echo "<p>File: public/run_migrate.php</p>";
-    echo "<p><a href='/' style='color:#0ff;'>→ Kembali ke Homepage</a></p>";
-    echo "<p><a href='/login' style='color:#0ff;'>→ Ke Halaman Login</a></p>";
+    echo "=== DONE ===\n";
+    echo "\n⚠️  HAPUS FILE INI SETELAH SELESAI!\n";
+    echo "\nKlik: <a href='/login'>Login Page</a>\n";
     
 } catch (\Exception $e) {
-    echo "<h3 style='color:#f00;'>❌ Error:</h3>";
-    echo "<pre style='color:#f00;'>" . $e->getMessage() . "</pre>";
-    echo "<pre style='color:#ff0;'>" . $e->getTraceAsString() . "</pre>";
+    echo "\n❌ ERROR:\n";
+    echo $e->getMessage() . "\n\n";
+    echo "File: " . $e->getFile() . "\n";
+    echo "Line: " . $e->getLine() . "\n\n";
+    echo "Stack trace:\n";
+    echo $e->getTraceAsString();
 }
 
-echo "</body></html>";
+echo "</pre>";

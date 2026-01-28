@@ -50,14 +50,47 @@ try {
     require_once __DIR__ . '/../vendor/autoload.php';
     echo "   OK\n\n";
     
-    echo "3. Booting CodeIgniter...\n";
+    echo "3. Initializing CodeIgniter...\n";
     // Load Paths config
     require_once __DIR__ . '/../app/Config/Paths.php';
     $paths = new Config\Paths();
     
-    // Load the framework bootstrap
-    require_once rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'Boot.php';
-    \CodeIgniter\Boot::bootWeb($paths);
+    // Define constants manually
+    define('ROOTPATH', realpath(rtrim($paths->appDirectory, '\\/ ') . '/../') . DIRECTORY_SEPARATOR);
+    define('APPPATH', realpath(rtrim($paths->appDirectory, '\\/ ')) . DIRECTORY_SEPARATOR);
+    define('SYSTEMPATH', realpath(rtrim($paths->systemDirectory, '\\/ ')) . DIRECTORY_SEPARATOR);
+    define('WRITEPATH', realpath(rtrim($paths->writableDirectory, '\\/ ')) . DIRECTORY_SEPARATOR);
+    define('TESTPATH', ROOTPATH . 'tests' . DIRECTORY_SEPARATOR);
+    
+    // Define environment
+    if (!defined('ENVIRONMENT')) {
+        define('ENVIRONMENT', $_ENV['CI_ENVIRONMENT'] ?? 'production');
+    }
+    
+    // Load Constants
+    require_once APPPATH . 'Config/Constants.php';
+    
+    // Load Common functions
+    require_once SYSTEMPATH . 'Common.php';
+    
+    // Load autoloader
+    require_once SYSTEMPATH . 'Config/AutoloadConfig.php';
+    require_once APPPATH . 'Config/Autoload.php';
+    require_once SYSTEMPATH . 'Modules/Modules.php';
+    require_once APPPATH . 'Config/Modules.php';
+    
+    // Initialize Autoloader
+    require_once SYSTEMPATH . 'Autoloader/Autoloader.php';
+    require_once SYSTEMPATH . 'Config/BaseService.php';
+    require_once APPPATH . 'Config/Services.php';
+    
+    $autoloader = new \CodeIgniter\Autoloader\Autoloader();
+    $autoloader->initialize(new \Config\Autoload(), new \Config\Modules());
+    $autoloader->register();
+    
+    // Load helpers
+    helper(['filesystem']);
+    
     echo "   OK\n\n";
     
     echo "4. Connecting to database...\n";

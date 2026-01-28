@@ -9,6 +9,9 @@ try {
     define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR);
     chdir(FCPATH);
     
+    // Load autoloader first
+    require __DIR__ . '/../vendor/autoload.php';
+    
     require __DIR__ . '/../app/Config/Paths.php';
     $paths = new Config\Paths();
     

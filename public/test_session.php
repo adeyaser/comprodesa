@@ -1,60 +1,44 @@
 <?php
 /**
- * Test Session - No output before session
+ * Test Session - Simple check
  */
-// Start session test
-ob_start();
+echo "<pre>";
+echo "=== SESSION PATH TEST ===\n\n";
 
-try {
-    define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR);
-    chdir(FCPATH);
-    
-    // Load autoloader first
-    require __DIR__ . '/../vendor/autoload.php';
-    
-    require __DIR__ . '/../app/Config/Paths.php';
-    $paths = new Config\Paths();
-    
-    $systemDir = realpath($paths->systemDirectory);
-    require_once $systemDir . '/Boot.php';
-    
-    // Capture any output
-    $output = ob_get_clean();
-    
-    // Now output
-    echo "<pre>";
-    echo "=== SESSION PATH TEST ===\n\n";
-    echo "Captured output: " . ($output ?: '(none)') . "\n\n";
-    
-    // Check session config
-    $sessionConfig = new \Config\Session();
-    echo "Session Driver: " . $sessionConfig->driver . "\n";
-    echo "Session Save Path: " . $sessionConfig->savePath . "\n";
-    echo "WRITEPATH constant: " . WRITEPATH . "\n";
-    
-    $fullPath = WRITEPATH . 'session';
-    echo "Full session path: " . $fullPath . "\n";
-    echo "Path exists: " . (is_dir($fullPath) ? 'YES' : 'NO') . "\n";
-    echo "Path writable: " . (is_writable($fullPath) ? 'YES' : 'NO') . "\n";
-    
-    // Try to start session manually
-    echo "\nTrying to start session...\n";
-    $session = \Config\Services::session();
-    echo "Session started successfully!\n";
-    echo "Session ID: " . session_id() . "\n";
-    
-    echo "\n=== SUCCESS ===\n";
-    echo "</pre>";
-    
-} catch (\Throwable $e) {
-    ob_end_clean();
-    echo "<pre>";
-    echo "❌ EXCEPTION:\n";
-    echo "   Type: " . get_class($e) . "\n";
-    echo "   Message: " . $e->getMessage() . "\n";
-    echo "   File: " . $e->getFile() . "\n";
-    echo "   Line: " . $e->getLine() . "\n\n";
-    echo "Stack trace:\n";
-    echo $e->getTraceAsString();
-    echo "</pre>";
+// Check writable/session folder directly
+$sessionPath = __DIR__ . '/../writable/session';
+echo "Session Path: " . realpath($sessionPath) . "\n";
+echo "Path exists: " . (is_dir($sessionPath) ? 'YES' : 'NO') . "\n";
+echo "Path writable: " . (is_writable($sessionPath) ? 'YES' : 'NO') . "\n\n";
+
+// List files in session folder
+echo "Files in session folder:\n";
+$files = scandir($sessionPath);
+foreach ($files as $file) {
+    if ($file != '.' && $file != '..') {
+        echo "   - $file\n";
+    }
 }
+if (count($files) <= 2) {
+    echo "   (empty)\n";
+}
+
+// Try native PHP session
+echo "\nTrying native PHP session...\n";
+session_save_path(realpath($sessionPath));
+session_start();
+$_SESSION['test'] = 'Hello';
+echo "Native session works! ID: " . session_id() . "\n";
+session_write_close();
+
+echo "\n=== NOW TESTING CODEIGNITER ===\n\n";
+
+// Clean up for CI
+session_abort();
+
+echo "Accessing /login directly. Check browser...\n";
+echo "</pre>";
+
+// Redirect to login
+echo "<p><a href='/login'>Click here to go to Login</a></p>";
+echo "<p><a href='/public/login'>Or try /public/login</a></p>";

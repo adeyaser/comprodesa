@@ -22,8 +22,21 @@ try {
     require_once __DIR__ . '/../vendor/autoload.php';
     echo "   OK\n\n";
     
-    echo "2. Loading Paths...\n";
-    $paths = new \Config\Paths();
+    echo "2. Defining paths...\n";
+    // Define paths manually
+    define('FCPATH', __DIR__ . '/');
+    
+    $pathsConfig = require __DIR__ . '/../app/Config/Paths.php';
+    $paths = new Config\Paths();
+    
+    define('ROOTPATH', realpath($paths->appDirectory . '/../') . '/');
+    define('APPPATH', realpath(rtrim($paths->appDirectory, '\\/ ')) . '/');
+    define('SYSTEMPATH', realpath($paths->systemDirectory) . '/');
+    define('WRITEPATH', realpath($paths->writableDirectory) . '/');
+    echo "   ROOTPATH: " . ROOTPATH . "\n";
+    echo "   APPPATH: " . APPPATH . "\n";
+    echo "   SYSTEMPATH: " . SYSTEMPATH . "\n";
+    echo "   WRITEPATH: " . WRITEPATH . "\n";
     echo "   OK\n\n";
     
     echo "3. Loading Bootstrap...\n";

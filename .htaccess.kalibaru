@@ -1,0 +1,27 @@
+# Root .htaccess for kalibaru.my.id
+# PENTING: Upload file ini sebagai .htaccess di root hosting
+
+# Disable directory listing
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Redirect to public folder
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Block access to sensitive directories
+<IfModule mod_rewrite.c>
+    RewriteRule ^app/ - [F,L]
+    RewriteRule ^writable/ - [F,L]
+    RewriteRule ^tests/ - [F,L]
+    RewriteRule ^vendor/ - [F,L]
+</IfModule>
+
+# Deny access to sensitive files
+<FilesMatch "^(\.env|\.gitignore|composer\.(json|lock)|phpunit\.xml\.dist|README\.md|\.htaccess\.*)$">
+    Require all denied
+</FilesMatch>

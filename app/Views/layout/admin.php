@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?> - Portal Desa</title>
+
+    <!-- Favicon -->
+    <?php if(!empty($villageConfig['village_logo'])): ?>
+        <link rel="icon" type="image/png" href="<?= base_url('uploads/logo/' . $villageConfig['village_logo']) ?>">
+    <?php endif; ?>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -12,12 +18,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; }
-        .sidebar { width: 250px; height: 100vh; position: fixed; background: #343a40; color: #fff; transition: all 0.3s; z-index: 1000; }
+        .sidebar { width: 250px; height: 100vh; position: fixed; background: #343a40; color: #fff; transition: all 0.3s; z-index: 1000; overflow-y: auto; }
         .sidebar .nav-link { color: rgba(255,255,255,.8); padding: 12px 20px; border-radius: 0; margin-bottom: 2px; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,.1); color: #fff; }
         .sidebar .sidebar-heading { padding: 20px; font-size: 1.2rem; font-weight: bold; background: rgba(0,0,0,.1); }
-        .main-content { margin-left: 250px; padding: 20px; transition: all 0.3s; }
-        .top-navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.05); padding: 10px 20px; }
+        .main-content { margin-left: 250px; padding: 0; transition: all 0.3s; min-height: 100vh; }
+        .content-body { padding: 20px; }
+        .top-navbar { position: sticky; top: 0; z-index: 100; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.05); padding: 10px 20px; }
         .card { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,.04); }
         
         @media (max-width: 768px) {
@@ -63,10 +70,10 @@
 </div>
 
 <div class="main-content">
-    <div class="top-navbar d-flex justify-content-between align-items-center mb-4 rounded-3">
+    <div class="top-navbar d-flex justify-content-between align-items-center mb-0">
         <div class="d-flex align-items-center">
             <button class="btn btn-light d-md-none me-3" id="sidebarToggle"><i class="bi bi-list fs-4"></i></button>
-            <h5 class="mb-0 fw-bold text-truncate" style="max-width: 200px;"><?= $title ?></h5>
+            <h5 class="mb-0 fw-bold text-truncate" style="max-width: 250px;"><?= $title ?></h5>
         </div>
         <div class="dropdown">
             <a class="text-decoration-none text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -78,7 +85,9 @@
         </div>
     </div>
 
-    <?= $this->renderSection('content') ?>
+    <div class="content-body">
+        <?= $this->renderSection('content') ?>
+    </div>
 </div>
 
 <script>

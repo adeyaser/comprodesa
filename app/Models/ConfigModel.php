@@ -15,7 +15,8 @@ class ConfigModel extends Model
     protected $allowedFields    = [
         'village_name', 'app_name', 'village_logo', 'village_address', 
         'village_phone', 'village_email', 'village_history', 
-        'village_vision', 'village_mission'
+        'village_vision', 'village_mission',
+        'meta_description', 'meta_keywords', 'google_maps'
     ];
 
     protected bool $allowEmptyInserts = false;

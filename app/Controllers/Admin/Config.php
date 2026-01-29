@@ -36,6 +36,9 @@ class Config extends BaseController
             'village_history' => $this->request->getPost('village_history'),
             'village_vision'  => $this->request->getPost('village_vision'),
             'village_mission' => $this->request->getPost('village_mission'),
+            'meta_description' => $this->request->getPost('meta_description'),
+            'meta_keywords'   => $this->request->getPost('meta_keywords'),
+            'google_maps'     => $this->request->getPost('google_maps'),
         ];
 
         // Handle Logo Upload

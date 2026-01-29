@@ -38,7 +38,15 @@
             padding: 12px;
             font-weight: 600;
         }
+        /* Style for Turnstile */
+        .cf-turnstile {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
     </style>
+    <!-- Cloudflare Turnstile Script -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -71,6 +79,10 @@
                     <input type="password" class="form-control bg-light border-start-0" id="password" name="password" required placeholder="Masukkan password">
                 </div>
             </div>
+
+            <!-- Cloudflare Turnstile Widget -->
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAACQLw3gfv_QE9sGB" data-theme="light"></div>
+
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary btn-login">Login Sekarang</button>
             </div>

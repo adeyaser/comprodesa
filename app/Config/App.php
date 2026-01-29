@@ -16,7 +16,25 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://localhost:8080/';
+    public string $baseURL = '';
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        // Jika .env tidak mengisi baseURL, maka isi secara otomatis (fleksibel)
+        if (empty($this->baseURL)) {
+            if (isset($_SERVER['HTTP_HOST'])) {
+                $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                // Mendapatkan sub-folder secara otomatis (misal: /compro_desa/)
+                $path = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+                $this->baseURL = $protocol . '://' . $_SERVER['HTTP_HOST'] . $path;
+            } else {
+                // Default jika diakses lewat terminal/CLI
+                $this->baseURL = 'http://localhost/';
+            }
+        }
+    }
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

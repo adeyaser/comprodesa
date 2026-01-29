@@ -83,6 +83,11 @@ class PortalController extends BaseController
         $data = $this->getCommonData($news['title']);
         $data['news'] = $news;
         $data['recent_news'] = $this->newsModel->where('id !=', $news['id'])->orderBy('created_at', 'DESC')->limit(5)->findAll();
+        
+        // Custom SEO for Detail
+        $data['meta_description'] = substr(strip_tags($news['content']), 0, 160);
+        $data['og_type'] = 'article';
+        
         return view('portal/news/detail', $data);
     }
 
@@ -101,6 +106,10 @@ class PortalController extends BaseController
         $data = $this->getCommonData($spot['name']);
         $data['spot'] = $spot;
         $data['gallery'] = $this->galleryModel->where('spot_id', $spot['id'])->findAll();
+        
+        // Custom SEO for Detail
+        $data['meta_description'] = substr(strip_tags($spot['description']), 0, 160);
+        
         return view('portal/tourism/detail', $data);
     }
 
@@ -115,5 +124,21 @@ class PortalController extends BaseController
         $data = $this->getCommonData('Layanan Desa');
         $data['services'] = $this->serviceModel->findAll();
         return view('portal/services', $data);
+    }
+
+    public function sitemap()
+    {
+        $news = $this->newsModel->findAll();
+        $tourism = $this->tourismModel->findAll();
+
+        $data = [
+            'news'    => $news,
+            'tourism' => $tourism,
+        ];
+
+        return $this->response
+                    ->setStatusCode(200)
+                    ->setContentType('text/xml')
+                    ->setBody(view('portal/sitemap', $data));
     }
 }

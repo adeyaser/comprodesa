@@ -69,6 +69,18 @@
                         </ul>
                     </div>
                 </div>
+
+                <!-- Google Maps -->
+                <?php if (!empty($config['google_maps'])): ?>
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden mt-4">
+                    <div class="card-header bg-success text-white p-3 fw-bold border-0">Lokasi Desa</div>
+                    <div class="card-body p-0">
+                        <div class="ratio ratio-4x3">
+                            <?= $config['google_maps'] ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

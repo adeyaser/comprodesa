@@ -7,6 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('dbcheck', 'DbCheck2::index');
+$routes->get('sitemap.xml', 'PortalController::sitemap');
 
 $routes->get('probe', 'ProbeScrape::index');
 $routes->get('news', 'PortalController::news');

@@ -4,6 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= (isset($title) ? $title . ' - ' : '') . $config['village_name'] ?></title>
+    
+    <!-- Favicon -->
+    <?php if(!empty($config['village_logo'])): ?>
+        <link rel="icon" type="image/png" href="<?= base_url('uploads/logo/' . $config['village_logo']) ?>">
+    <?php endif; ?>
+
+    <!-- SEO Tags -->
+    <meta name="description" content="<?= $meta_description ?? $config['meta_description'] ?? 'Website Resmi Desa ' . $config['village_name'] ?>">
+    <meta name="keywords" content="<?= $config['meta_keywords'] ?? 'desa, profil desa, layanan publik' ?>">
+    <link rel="canonical" href="<?= current_url() ?>">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
+    <meta property="og:url" content="<?= current_url() ?>">
+    <meta property="og:title" content="<?= (isset($title) ? $title . ' - ' : '') . $config['village_name'] ?>">
+    <meta property="og:description" content="<?= $meta_description ?? $config['meta_description'] ?? 'Website Resmi Desa ' . $config['village_name'] ?>">
+    <meta property="og:image" content="<?= base_url('uploads/logo/' . $config['village_logo']) ?>">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="<?= current_url() ?>">
+    <meta property="twitter:title" content="<?= (isset($title) ? $title . ' - ' : '') . $config['village_name'] ?>">
+    <meta property="twitter:description" content="<?= $meta_description ?? $config['meta_description'] ?? 'Website Resmi Desa ' . $config['village_name'] ?>">
+    <meta property="twitter:image" content="<?= base_url('uploads/logo/' . $config['village_logo']) ?>">
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "GovernmentOrganization",
+      "name": "Desa <?= $config['village_name'] ?>",
+      "url": "<?= base_url() ?>",
+      "logo": "<?= base_url('uploads/logo/' . $config['village_logo']) ?>",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "<?= str_replace(["\r", "\n"], ' ', $config['village_address']) ?>",
+        "addressLocality": "Indonesia"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "<?= $config['village_phone'] ?>",
+        "contactType": "customer service",
+        "email": "<?= $config['village_email'] ?>"
+      }
+    }
+    </script>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -20,7 +67,7 @@
             --dark-color: #212529;
             --light-bg: #f8f9fa;
         }
-        body { font-family: 'Inter', sans-serif; color: #333; }
+        body { font-family: 'Inter', sans-serif; color: #333; padding-top: 75px; }
         .navbar { transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(0,0,0,.05); background: #fff !important; }
         .navbar-brand img { height: 40px; }
         .nav-link { font-weight: 500; font-size: 0.95rem; color: #444 !important; padding-left: 15px; padding-right: 15px; }
@@ -50,14 +97,14 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg sticky-top">
+<nav class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid px-4">
         <a class="navbar-brand d-flex align-items-center" href="<?= base_url() ?>">
             <?php if($config['village_logo']): ?>
-                <img src="<?= base_url('uploads/logo/' . $config['village_logo']) ?>" alt="Logo" class="me-2">
+                <img src="<?= base_url('uploads/logo/' . $config['village_logo']) ?>" alt="Logo Desa <?= $config['village_name'] ?>" class="me-2">
             <?php endif; ?>
             <span class="fw-bold text-primary">DESA <?= strtoupper($config['village_name']) ?></span>
-        </a>
+</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -69,6 +116,11 @@
                 <li class="nav-item"><a class="nav-link <?= ($uri->getSegment(1) == 'news') ? 'active' : '' ?>" href="<?= base_url('news') ?>">Berita</a></li>
                 <li class="nav-item"><a class="nav-link <?= ($uri->getSegment(1) == 'tourism') ? 'active' : '' ?>" href="<?= base_url('tourism') ?>">Wisata</a></li>
                 <li class="nav-item"><a class="nav-link <?= ($uri->getSegment(1) == 'services') ? 'active' : '' ?>" href="<?= base_url('services') ?>">Layanan</a></li>
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                    <a class="btn btn-primary rounded-pill px-4" href="<?= base_url('login') ?>">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

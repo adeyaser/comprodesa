@@ -92,6 +92,29 @@
                         </div>
                     </div>
 
+                    <div class="row g-4 mt-2">
+                        <div class="col-md-12 border-top pt-4">
+                            <h6 class="fw-bold text-success mb-4"><i class="bi bi-search me-2"></i>SEO & Google Maps</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small text-uppercase">Meta Description (SEO)</label>
+                                    <textarea class="form-control" name="meta_description" rows="3" placeholder="Deskripsi singkat untuk hasil pencarian Google..."><?= $config['meta_description'] ?? '' ?></textarea>
+                                    <small class="text-muted">Disarankan antara 150-160 karakter.</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small text-uppercase">Meta Keywords (SEO)</label>
+                                    <input type="text" class="form-control" name="meta_keywords" value="<?= $config['meta_keywords'] ?? '' ?>" placeholder="contoh: desa, wisata, layanan, banyuwangi">
+                                    <small class="text-muted">Pisahkan dengan tanda koma.</small>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold small text-uppercase">Google Maps Embed Code</label>
+                                    <textarea class="form-control" name="google_maps" rows="3" placeholder='Tempel kode <iframe> dari Google Maps di sini...'><?= $config['google_maps'] ?? '' ?></textarea>
+                                    <small class="text-muted">Buka Google Maps, klik Bagikan > Sematkan peta > Salin HTML.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mt-4 pt-3 border-top text-end">
                         <button type="submit" class="btn btn-primary px-4">
                             <i class="bi bi-save me-2"></i>Simpan Perubahan

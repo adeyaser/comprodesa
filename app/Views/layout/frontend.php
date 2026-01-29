@@ -13,6 +13,7 @@
     <!-- SEO Tags -->
     <meta name="description" content="<?= $meta_description ?? $config['meta_description'] ?? 'Website Resmi Desa ' . $config['village_name'] ?>">
     <meta name="keywords" content="<?= $config['meta_keywords'] ?? 'desa, profil desa, layanan publik' ?>">
+    <meta name="google-site-verification" content="2DsAR2dOaz0SsZwBiT_hGAGPqgVeV9zDeM3-zlyvoCA" />
     <link rel="canonical" href="<?= current_url() ?>">
     
     <!-- Open Graph / Facebook -->

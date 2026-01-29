@@ -1,6 +1,31 @@
 <?= $this->extend('layout/frontend') ?>
 
 <?= $this->section('content') ?>
+
+<!-- Breadcrumbs -->
+<nav class="bg-white border-bottom py-2 shadow-sm sticky-top" style="top: 72px; z-index: 1020;">
+    <div class="container-fluid px-4">
+        <ol class="breadcrumb mb-0 small" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="<?= base_url() ?>" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name">Beranda</span>
+                </a>
+                <meta itemprop="position" content="1" />
+            </li>
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="<?= base_url('tourism') ?>" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name">Wisata</span>
+                </a>
+                <meta itemprop="position" content="2" />
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name"><?= $spot['name'] ?></span>
+                <meta itemprop="position" content="3" />
+            </li>
+        </ol>
+    </div>
+</nav>
+
 <section class="bg-light py-5 position-relative">
     <div class="container-fluid px-4 py-4 text-center position-relative z-1">
         <h1 class="fw-bold mb-3"><?= $spot['name'] ?></h1>

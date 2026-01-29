@@ -1,15 +1,28 @@
 <?= $this->extend('layout/frontend') ?>
 
 <?= $this->section('content') ?>
-<section class="py-5 bg-light border-bottom">
-    <div class="container-fluid py-4">
+
+<!-- Breadcrumbs -->
+<nav class="bg-white border-bottom py-2 shadow-sm sticky-top" style="top: 72px; z-index: 1020;">
+    <div class="container-fluid px-4">
+        <ol class="breadcrumb mb-0 small" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="<?= base_url() ?>" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name">Beranda</span>
+                </a>
+                <meta itemprop="position" content="1" />
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">Layanan</span>
+                <meta itemprop="position" content="2" />
+            </li>
+        </ol>
+    </div>
+</nav>
+
+<section class="py-5 bg-light">
+    <div class="container-fluid px-4 py-4">
         <h1 class="fw-bold mb-0">Layanan Desa</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="<?= base_url() ?>">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Layanan</li>
-            </ol>
-        </nav>
     </div>
 </section>
 

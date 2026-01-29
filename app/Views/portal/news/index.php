@@ -1,6 +1,25 @@
 <?= $this->extend('layout/frontend') ?>
 
 <?= $this->section('content') ?>
+
+<!-- Breadcrumbs -->
+<nav class="bg-white border-bottom py-2 shadow-sm sticky-top" style="top: 72px; z-index: 1020;">
+    <div class="container-fluid px-4">
+        <ol class="breadcrumb mb-0 small" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="<?= base_url() ?>" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name">Beranda</span>
+                </a>
+                <meta itemprop="position" content="1" />
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">Berita</span>
+                <meta itemprop="position" content="2" />
+            </li>
+        </ol>
+    </div>
+</nav>
+
 <!-- News Header -->
 <div class="bg-light py-5 text-center">
     <div class="container-fluid px-4">

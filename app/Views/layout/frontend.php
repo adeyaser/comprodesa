@@ -16,6 +16,17 @@
     <meta name="google-site-verification" content="2DsAR2dOaz0SsZwBiT_hGAGPqgVeV9zDeM3-zlyvoCA" />
     <link rel="canonical" href="<?= current_url() ?>">
     
+    <!-- Google Analytics -->
+    <?php if(!empty($config['google_analytics'])): ?>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $config['google_analytics'] ?>"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '<?= $config['google_analytics'] ?>');
+        </script>
+    <?php endif; ?>
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
     <meta property="og:url" content="<?= current_url() ?>">

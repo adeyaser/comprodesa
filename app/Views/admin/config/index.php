@@ -111,6 +111,11 @@
                                     <textarea class="form-control" name="google_maps" rows="3" placeholder='Tempel kode <iframe> dari Google Maps di sini...'><?= $config['google_maps'] ?? '' ?></textarea>
                                     <small class="text-muted">Buka Google Maps, klik Bagikan > Sematkan peta > Salin HTML.</small>
                                 </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold small text-uppercase">Google Analytics Measurement ID</label>
+                                    <input type="text" class="form-control" name="google_analytics" value="<?= $config['google_analytics'] ?? '' ?>" placeholder="G-XXXXXXXXXX">
+                                    <small class="text-muted">Masukkan ID Pengukuran Google Analytics Anda. Kosongkan jika tidak digunakan.</small>
+                                </div>
                             </div>
                         </div>
                     </div>

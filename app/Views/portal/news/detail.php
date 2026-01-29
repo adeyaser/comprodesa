@@ -1,6 +1,31 @@
 <?= $this->extend('layout/frontend') ?>
 
 <?= $this->section('content') ?>
+
+<!-- Breadcrumbs -->
+<nav class="bg-white border-bottom py-2 shadow-sm sticky-top" style="top: 72px; z-index: 1020;">
+    <div class="container-fluid px-4">
+        <ol class="breadcrumb mb-0 small" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="<?= base_url() ?>" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name">Beranda</span>
+                </a>
+                <meta itemprop="position" content="1" />
+            </li>
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="<?= base_url('news') ?>" class="text-decoration-none" itemprop="item">
+                    <span itemprop="name">Berita</span>
+                </a>
+                <meta itemprop="position" content="2" />
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name"><?= $news['title'] ?></span>
+                <meta itemprop="position" content="3" />
+            </li>
+        </ol>
+    </div>
+</nav>
+
 <!-- Header Image -->
 <div class="bg-light py-5 position-relative" style="background: url('<?= base_url('uploads/news/' . $news['thumbnail']) ?>') no-repeat center center; background-size: cover;">
     <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
@@ -28,9 +53,9 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h6 class="fw-bold mb-0">Bagikan:</h6>
                             <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-sm btn-outline-primary"><i class="bi bi-facebook"></i></a>
-                                <a href="#" class="btn btn-sm btn-outline-info"><i class="bi bi-twitter"></i></a>
-                                <a href="#" class="btn btn-sm btn-outline-success"><i class="bi bi-whatsapp"></i></a>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=<?= current_url() ?>" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-facebook"></i></a>
+                                <a href="https://twitter.com/intent/tweet?url=<?= current_url() ?>&text=<?= urlencode($news['title']) ?>" target="_blank" class="btn btn-sm btn-outline-info"><i class="bi bi-twitter"></i></a>
+                                <a href="https://api.whatsapp.com/send?text=<?= urlencode($news['title'] . ' ' . current_url()) ?>" target="_blank" class="btn btn-sm btn-outline-success"><i class="bi bi-whatsapp"></i></a>
                             </div>
                         </div>
                     </div>

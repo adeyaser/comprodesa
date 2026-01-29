@@ -38,6 +38,10 @@
             padding: 12px;
             font-weight: 600;
         }
+        .password-toggle {
+            cursor: pointer;
+            border-left: none;
+        }
         /* Style for Turnstile */
         .cf-turnstile {
             margin-bottom: 1.5rem;
@@ -76,7 +80,10 @@
                 <label for="password" class="form-label text-secondary small text-uppercase fw-bold">Password</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0 text-secondary"><i class="fas fa-lock"></i></span>
-                    <input type="password" class="form-control bg-light border-start-0" id="password" name="password" required placeholder="Masukkan password">
+                    <input type="password" class="form-control bg-light border-start-0 border-end-0" id="password" name="password" required placeholder="Masukkan password">
+                    <span class="input-group-text bg-light text-secondary password-toggle" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </span>
                 </div>
             </div>
 
@@ -95,5 +102,19 @@
 
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function (e) {
+        // toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        
+        // toggle the eye icon
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+</script>
 </body>
 </html>

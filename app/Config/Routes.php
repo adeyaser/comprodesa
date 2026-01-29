@@ -55,6 +55,7 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
 
     // Scraper Routes
     $routes->get('scraper', 'Admin\Scraper::index');
+    $routes->get('scraper/migrate', 'Admin\Scraper::migrate');
     $routes->post('scraper/create', 'Admin\Scraper::create');
     $routes->get('scraper/delete/(:num)', 'Admin\Scraper::delete/$1');
     $routes->get('scraper/toggle/(:num)', 'Admin\Scraper::toggle/$1');

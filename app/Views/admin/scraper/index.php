@@ -18,9 +18,12 @@
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold text-primary">Daftar Sumber Scraping</h5>
-                <div>
-                    <a href="<?= base_url('admin/scraper/refresh') ?>" class="btn btn-warning btn-sm me-2">
-                        <i class="bi bi-arrow-clockwise me-1"></i> Paksa Re-Scrape (Clear Cache)
+                <div class="d-flex gap-2">
+                    <a href="<?= base_url('admin/scraper/migrate') ?>" class="btn btn-outline-primary btn-sm" onclick="return confirm('Jalankan pembaruan struktur database (Migrasi)?')">
+                        <i class="bi bi-database-up me-1"></i> Update DB
+                    </a>
+                    <a href="<?= base_url('admin/scraper/refresh') ?>" class="btn btn-warning btn-sm">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Paksa Re-Scrape
                     </a>
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSourceModal">
                         <i class="bi bi-plus-lg me-1"></i> Tambah Sumber

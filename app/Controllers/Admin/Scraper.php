@@ -57,6 +57,22 @@ class Scraper extends BaseController
     }
 
     /**
+     * Fitur untuk menjalankan migrasi database via web
+     * Berguna jika hosting tidak memiliki akses SSH/Terminal
+     */
+    public function migrate()
+    {
+        $migrate = \Config\Services::migrations();
+
+        try {
+            $migrate->latest();
+            return redirect()->back()->with('success', 'Sinkronisasi database (Migrasi) berhasil dijalankan.');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Gagal migrasi: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * URL untuk Cron Job (Akses via browser atau wget)
      * Limitasi: Menggunakan Secret Key untuk keamanan
      */

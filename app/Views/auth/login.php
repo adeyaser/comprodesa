@@ -81,7 +81,7 @@
             </div>
 
             <!-- Cloudflare Turnstile Widget -->
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAACQLw3gfv_QE9sGB" data-theme="light"></div>
+            <div class="cf-turnstile" data-sitekey="<?= env('turnstile.site_key') ?>" data-theme="light"></div>
 
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary btn-login">Login Sekarang</button>

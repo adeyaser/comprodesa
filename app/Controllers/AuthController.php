@@ -32,10 +32,18 @@ class AuthController extends BaseController
             'remoteip' => $this->request->getIPAddress(),
         ]);
         
-        $outcome = json_decode(curl_exec($ch), true);
+        // Disable SSL verification on localhost to prevent common XAMPP issues
+        if (strpos(base_url(), 'localhost') !== false) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        }
+        
+        $response = curl_exec($ch);
+        $outcome = json_decode($response, true);
         curl_close($ch);
 
-        if (!$outcome || !$outcome['success']) {
+        if (!$outcome || !isset($outcome['success']) || !$outcome['success']) {
+            // Log error for debugging if needed
+            log_message('error', 'Turnstile verification failed: ' . ($response ?: 'No response from server'));
             return redirect()->back()->with('error', 'Verifikasi keamanan (Turnstile) gagal. Silakan coba lagi.')->withInput();
         }
 

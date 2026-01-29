@@ -27,15 +27,20 @@
 </nav>
 
 <!-- Header Image -->
-<div class="bg-light py-5 position-relative" style="background: url('<?= base_url('uploads/news/' . $news['thumbnail']) ?>') no-repeat center center; background-size: cover;">
+<div class="bg-light py-5 position-relative" style="background: url('<?= $news['is_external'] ? $news['thumbnail'] : base_url('uploads/news/' . $news['thumbnail']) ?>') no-repeat center center; background-size: cover;">
     <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
     <div class="container-fluid px-4 position-relative z-1 text-white text-center py-5">
-        <span class="badge bg-primary mb-3"><?= $news['category_name'] ?></span>
+        <div class="d-flex justify-content-center gap-2 mb-3">
+            <span class="badge bg-primary"><?= $news['category_name'] ?></span>
+            <?php if($news['is_external']): ?>
+                <span class="badge bg-warning text-dark"><i class="bi bi-globe me-1"></i> <?= $news['source_name'] ?></span>
+            <?php endif; ?>
+        </div>
         <h1 class="fw-bold display-5 mb-3"><?= $news['title'] ?></h1>
         <div class="small opacity-75">
             <i class="bi bi-calendar3 me-2"></i> <?= date('d F Y', strtotime($news['created_at'])) ?>
             <span class="mx-3">•</span>
-            <i class="bi bi-person me-2"></i> Admin
+            <i class="bi bi-person me-2"></i> <?= $news['author_name'] ?>
         </div>
     </div>
 </div>
@@ -47,6 +52,16 @@
                 <article class="bg-white p-4 p-md-5 rounded shadow-sm">
                     <div class="content-body lh-lg mb-5">
                         <?= $news['content'] ?>
+                        
+                        <?php if($news['is_external']): ?>
+                            <div class="mt-4 p-3 bg-light border-start border-4 border-warning rounded">
+                                <p class="mb-2 fw-bold text-dark">Sumber Berita:</p>
+                                <p class="mb-0 small text-secondary">Artikel ini disadur dari <strong><?= $news['source_name'] ?></strong>. Anda bisa membaca artikel selengkapnya melalui tautan di bawah ini:</p>
+                                <a href="<?= $news['original_url'] ?>" target="_blank" class="btn btn-sm btn-warning mt-3 fw-bold">
+                                    Baca di Sumber Asli <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                </a>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="border-top pt-4 mt-5">

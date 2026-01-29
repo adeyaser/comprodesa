@@ -9,68 +9,44 @@ class ScrapingSourcesSeeder extends Seeder
     public function run()
     {
         $sources = [
-            // Portal Berita Lokal
             [
-                'source_name' => 'GoBekasi',
-                'url'         => 'https://gobekasi.id/lokal-daerah/kota-bekasi/',
+                'source_name' => 'Tribun Bekasi',
+                'url'         => 'https://bekasi.tribunnews.com/',
                 'type'        => 'portal',
                 'status'      => 'active',
                 'created_at'  => date('Y-m-d H:i:s'),
             ],
             [
-                'source_name' => 'Radar Bekasi',
-                'url'         => 'https://radarbekasi.id/category/bekasi-kota/',
+                'source_name' => 'Detik Bekasi',
+                'url'         => 'https://www.detik.com/tag/bekasi/',
+                'type'        => 'portal',
+                'status'      => 'active',
+                'created_at'  => date('Y-m-d H:i:s'),
+            ],
+            [
+                'source_name' => 'Antara Jawa Barat',
+                'url'         => 'https://jabar.antaranews.com/bekasi',
+                'type'        => 'portal',
+                'status'      => 'active',
+                'created_at'  => date('Y-m-d H:i:s'),
+            ],
+            [
+                'source_name' => 'Kec. Medan Satria',
+                'url'         => 'https://medansatria.bekasikota.go.id/',
+                'type'        => 'govt',
+                'status'      => 'active',
+                'created_at'  => date('Y-m-d H:i:s'),
+            ],
+            [
+                'source_name' => 'Liputan6 Bekasi',
+                'url'         => 'https://www.liputan6.com/tag/bekasi',
                 'type'        => 'portal',
                 'status'      => 'active',
                 'created_at'  => date('Y-m-d H:i:s'),
             ],
             [
                 'source_name' => 'Info Bekasi',
-                'url'         => 'https://infobekasi.co.id/',
-                'type'        => 'portal',
-                'status'      => 'active',
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-            [
-                'source_name' => 'Bekasi Satu',
-                'url'         => 'https://www.bekasisatu.com/',
-                'type'        => 'portal',
-                'status'      => 'active',
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-            // Pemerintah
-            [
-                'source_name' => 'Pemkot Bekasi',
-                'url'         => 'https://www.bekasikota.go.id/berita',
-                'type'        => 'govt',
-                'status'      => 'active',
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-            [
-                'source_name' => 'PPID Bekasi',
-                'url'         => 'https://ppid.bekasikota.go.id/',
-                'type'        => 'govt',
-                'status'      => 'active',
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-            // Media Nasional (Regional)
-            [
-                'source_name' => 'Detik News (Tag: Bekasi)',
-                'url'         => 'https://www.detik.com/tag/bekasi',
-                'type'        => 'portal',
-                'status'      => 'active',
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-            [
-                'source_name' => 'Kompas Regional (Search: Bekasi)',
-                'url'         => 'https://regional.kompas.com/search?q=bekasi',
-                'type'        => 'portal',
-                'status'      => 'active',
-                'created_at'  => date('Y-m-d H:i:s'),
-            ],
-            [
-                'source_name' => 'Tribun Jakarta (Bekasi)',
-                'url'         => 'https://jakarta.tribunnews.com/bekasi',
+                'url'         => 'https://infobekasi.co.id/category/news/',
                 'type'        => 'portal',
                 'status'      => 'active',
                 'created_at'  => date('Y-m-d H:i:s'),

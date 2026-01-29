@@ -60,8 +60,11 @@
             <i class="bi bi-gear-wide-connected me-2"></i> Layanan
         </a>
         <div class="px-3 mt-3 mb-1 text-uppercase small opacity-50 fw-bold">Pengaturan</div>
-        <a href="<?= base_url('admin/config') ?>" class="nav-link">
+        <a href="<?= base_url('admin/config') ?>" class="nav-link <?= strpos(current_url(), 'admin/config') !== false ? 'active' : '' ?>">
             <i class="bi bi-sliders me-2"></i> Profil Desa
+        </a>
+        <a href="<?= base_url('admin/scraper') ?>" class="nav-link <?= strpos(current_url(), 'admin/scraper') !== false ? 'active' : '' ?>">
+            <i class="bi bi-robot me-2"></i> Auto Scraping
         </a>
         <a href="<?= base_url('logout') ?>" class="nav-link text-danger mt-auto">
             <i class="bi bi-box-arrow-right me-2"></i> Logout

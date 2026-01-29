@@ -21,11 +21,18 @@ class AuthController extends BaseController
 
         // Verify Cloudflare Turnstile
         $turnstileResponse = $this->request->getPost('cf-turnstile-response');
-        $secretKey = env('turnstile.secret_key');
+        
+        // Try both dot and underscore notation for compatibility
+        $secretKey = env('turnstile.secret_key') ?? env('turnstile_secret_key');
 
         if (empty($secretKey)) {
-            log_message('error', 'Turnstile Secret Key is missing in .env');
-            return redirect()->back()->with('error', 'Konfigurasi keamanan tidak lengkap (Missing Secret Key).')->withInput();
+            // Fallback for some hosting that doesn't load .env properly into env()
+            $secretKey = $_ENV['turnstile.secret_key'] ?? $_ENV['turnstile_secret_key'] ?? '';
+        }
+
+        if (empty($secretKey)) {
+            log_message('error', 'Turnstile Secret Key is missing in .env or environment');
+            return redirect()->back()->with('error', 'Konfigurasi keamanan tidak lengkap (Missing Secret Key). Silakan hubungi pengelola.')->withInput();
         }
         
         $ch = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');

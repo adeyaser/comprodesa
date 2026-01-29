@@ -17,7 +17,77 @@ class WebScraper
         
         if (!$html) return [];
 
-        return $this->parseHtml($html, $source['source_name'], $url);
+        $articles = $this->parseHtml($html, $source['source_name'], $url);
+
+        // Fetch full content for each article (limit to save time/resources)
+        foreach ($articles as &$article) {
+            $article['full_content'] = $this->extractFullContent($article['url']);
+        }
+
+        return $articles;
+    }
+
+    private function extractFullContent($url)
+    {
+        $html = $this->fetchUrl($url);
+        if (!$html) return null;
+
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($html);
+        $xpath = new \DOMXPath($dom);
+
+        // List of common selectors for main article content
+        $contentSelectors = [
+            "//article",
+            "//div[contains(@class, 'detail__body-text')]", // Detik
+            "//div[contains(@class, 'read__content')]",    // Kompas
+            "//div[contains(@class, 'article-content')]",  // General
+            "//div[contains(@class, 'entry-content')]",    // Wordpress
+            "//div[contains(@id, 'articleBody')]",        // General
+            "//div[contains(@class, 'post-content')]"     // General
+        ];
+
+        foreach ($contentSelectors as $selector) {
+            $nodes = $xpath->query($selector);
+            if ($nodes->length > 0) {
+                // Get the one with most text content
+                $bestNode = null;
+                $maxLen = 0;
+                foreach ($nodes as $node) {
+                    $len = strlen(trim($node->textContent));
+                    if ($len > $maxLen) {
+                        $maxLen = $len;
+                        $bestNode = $node;
+                    }
+                }
+
+                if ($bestNode) {
+                    // Clean up script tags and other junk
+                    $scripts = $xpath->query(".//script | .//style | .//iframe | .//ins | .//nav", $bestNode);
+                    foreach ($scripts as $s) {
+                        $s->parentNode->removeChild($s);
+                    }
+                    
+                    // Return as HTML but clean up
+                    $content = "";
+                    $paragraphs = $xpath->query(".//p", $bestNode);
+                    if ($paragraphs->length > 0) {
+                        foreach ($paragraphs as $p) {
+                            $text = trim($p->textContent);
+                            if (strlen($text) > 20) {
+                                $content .= "<p>" . htmlspecialchars($text) . "</p>";
+                            }
+                        }
+                    } else {
+                        $content = htmlspecialchars(trim($bestNode->textContent));
+                    }
+                    
+                    return $content ?: null;
+                }
+            }
+        }
+
+        return null;
     }
 
     private function fetchUrl($url)
@@ -45,7 +115,8 @@ class WebScraper
 
         $articles = [];
         
-        $query = "//h3/a | //h2/a | //div[contains(@class, 'post-title')]/a | //h1[contains(@class, 'post-title')]/a";
+        // More comprehensive news query
+        $query = "//h3/a | //h2/a | //h1/a | //a[contains(@class, 'title')] | //a[contains(@class, 'post-title')] | //a[contains(@id, 'title')]";
         
         $nodes = $xpath->query($query);
         
@@ -55,10 +126,13 @@ class WebScraper
             $title = trim($node->textContent);
             $link = $node->getAttribute('href');
             
+            // Skip empty titles or obvious non-news links
+            if (strlen($title) < 10 || empty($link) || $link == '#' || strpos($link, 'javascript') === 0) continue;
+
             $thumbnail = $this->extractThumbnail($xpath, $node);
 
             // Validation
-            if (strlen($title) > 5 && !empty($link)) {
+            if (!empty($link)) {
                 $articles[] = [
                     'source'    => $sourceName,
                     'title'     => $title,
@@ -68,7 +142,8 @@ class WebScraper
                 ];
             }
             
-            if (count($articles) >= 5) break; 
+            // Limit to more items per source to increase chance of matching keywords
+            if (count($articles) >= 15) break; 
         }
 
         return $articles;

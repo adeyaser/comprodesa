@@ -37,14 +37,24 @@
                         <?php foreach($news as $n): ?>
                         <tr>
                             <td class="ps-4">
-                                <img src="<?= base_url('uploads/news/' . $n['thumbnail']) ?>" alt="Thumb" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                <?php 
+                                    $thumb = !empty($n['thumbnail']) ? ($n['is_external'] ? $n['thumbnail'] : base_url('uploads/news/' . $n['thumbnail'])) : 'https://placehold.co/600x400?text=No+Image';
+                                ?>
+                                <img src="<?= $thumb ?>" alt="Thumb" class="rounded shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
                             </td>
                             <td>
-                                <div class="fw-bold"><?= $n['title'] ?></div>
-                                <small class="text-muted"><?= substr(strip_tags($n['content']), 0, 100) ?>...</small>
+                                <div class="fw-bold mb-1"><?= $n['title'] ?></div>
+                                <div class="d-flex gap-2">
+                                    <span class="badge bg-light text-primary border border-primary small"><?= $n['category_name'] ?></span>
+                                    <?php if($n['is_external']): ?>
+                                        <span class="badge bg-warning text-dark small"><i class="bi bi-globe me-1"></i> <?= $n['source_name'] ?></span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
-                            <td><span class="badge bg-light text-primary border border-primary"><?= $n['category_name'] ?></span></td>
-                            <td><?= date('d M Y', strtotime($n['created_at'])) ?></td>
+                            <td>
+                                <small class="text-muted d-block"><?= date('d/m/Y', strtotime($n['created_at'])) ?></small>
+                                <small class="text-secondary"><?= date('H:i', strtotime($n['created_at'])) ?> WIB</small>
+                            </td>
                             <td class="text-center pe-4">
                                 <a href="<?= base_url('admin/news/edit/' . $n['id']) ?>" class="btn btn-sm btn-outline-info me-1" title="Edit">
                                     <i class="bi bi-pencil"></i>

@@ -20,6 +20,27 @@
     </div>
 </nav>
 
+<style>
+    .news-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.08);
+    }
+    .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.1) !important;
+    }
+    .hover-primary:hover {
+        color: var(--bs-primary) !important;
+    }
+    #news-container .news-item {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
 <!-- News Header -->
 <div class="bg-light py-5 text-center">
     <div class="container-fluid px-4">
@@ -30,62 +51,87 @@
 
 <section class="py-5">
     <div class="container-fluid px-4">
-        <!-- External News Section -->
-        <?php if(!empty($external_news)): ?>
-        <div class="mb-5">
-            <h4 class="fw-bold mb-4 border-start border-4 border-warning ps-3">Berita Terkini (Live dari Sumber Eksternal)</h4>
-            <div class="row g-4">
-                <?php foreach($external_news as $ex): ?>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow-sm" style="background: #fff8e1;">
-                            <?php if(!empty($ex['thumbnail'])): ?>
-                                <div style="height: 180px; overflow: hidden;">
-                                    <img src="<?= $ex['thumbnail'] ?>" class="card-img-top" alt="<?= $ex['title'] ?>" style="object-fit: cover; height: 100%; width: 100%;">
-                                </div>
-                            <?php endif; ?>
-                            <div class="card-body">
-                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="badge bg-warning text-dark"><?= $ex['source'] ?></span>
-                                    <small class="text-muted"><?= date('H:i', strtotime($ex['date'])) ?></small>
-                                 </div>
-                                <h6 class="fw-bold"><a href="<?= $ex['url'] ?>" target="_blank" class="text-dark text-decoration-none"><?= $ex['title'] ?> <i class="bi bi-box-arrow-up-right small ms-1"></i></a></h6>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <hr class="mb-5 text-secondary opacity-25">
-        <?php endif; ?>
-
-        <div class="row g-4 mb-5">
+        <div class="row g-4 mb-5" id="news-container">
             <?php if(empty($news)): ?>
                 <div class="col-12 text-center py-5">
                     <p class="text-muted">Belum ada berita yang tersedia.</p>
                 </div>
             <?php else: ?>
-                <?php foreach($news as $n): ?>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="news-card card h-100">
-                            <img src="<?= !empty($n['thumbnail']) ? base_url('uploads/news/' . $n['thumbnail']) : 'https://placehold.co/800x400?text=No+Image' ?>" class="card-img-top" alt="<?= $n['title'] ?>">
-                            <div class="card-body p-4">
-                                <span class="badge bg-light text-primary mb-2 border border-primary"><?= $n['category_name'] ?></span>
-                                <h5 class="fw-bold mb-3"><a href="<?= base_url('news/' . $n['slug']) ?>" class="text-dark text-decoration-none"><?= $n['title'] ?></a></h5>
-                                <p class="small text-secondary mb-3"><?= substr(strip_tags($n['content']), 0, 120) ?>...</p>
-                                <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
-                                    <span class="small text-muted"><i class="bi bi-calendar3 me-1"></i> <?= date('d M Y', strtotime($n['created_at'])) ?></span>
-                                    <a href="<?= base_url('news/' . $n['slug']) ?>" class="small fw-bold text-primary text-decoration-none">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                <?= view('portal/news/_list_items', ['news' => $news]) ?>
             <?php endif; ?>
         </div>
         
-        <div class="mt-5 d-flex justify-content-center">
+        <div id="load-more-loader" class="text-center py-4 d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted small">Memuat berita lainnya...</p>
+        </div>
+
+        <div id="no-more-news" class="text-center py-4 d-none">
+            <p class="text-muted small">Tidak ada berita lagi untuk ditampilkan.</p>
+        </div>
+        
+        <div class="mt-5 d-flex justify-content-center" id="pagination-wrapper">
             <?= $pager->links('news', 'default_full') ?>
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let nextPage = 2;
+    let isLoading = false;
+    let hasMore = <?= ($pager->getPageCount() > 1) ? 'true' : 'false' ?>;
+    const container = document.getElementById('news-container');
+    const loader = document.getElementById('load-more-loader');
+    const noMore = document.getElementById('no-more-news');
+    const paginationWrapper = document.getElementById('pagination-wrapper');
+
+    // Sembunyikan pagination standar jika JS aktif (opsional, tapi bagus untuk auto-scroll)
+    if (hasMore) {
+        paginationWrapper.classList.add('d-none');
+    }
+
+    window.onscroll = function() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            if (!isLoading && hasMore) {
+                loadMoreNews();
+            }
+        }
+    };
+
+    function loadMoreNews() {
+        isLoading = true;
+        loader.classList.remove('d-none');
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', nextPage);
+
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            if (html.trim() === '') {
+                hasMore = false;
+                loader.classList.add('d-none');
+                noMore.classList.remove('d-none');
+            } else {
+                container.insertAdjacentHTML('beforeend', html);
+                nextPage++;
+                isLoading = false;
+                loader.classList.add('d-none');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading more news:', error);
+            isLoading = false;
+            loader.classList.add('d-none');
+        });
+    }
+});
+</script>
 <?= $this->endSection() ?>

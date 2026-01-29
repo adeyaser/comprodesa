@@ -33,41 +33,32 @@ class PortalController extends BaseController
     public function news()
     {
         $data = $this->getCommonData('Berita Desa');
-        // Local News
-        $data['news'] = $this->newsModel->select('news.*, news_categories.name as category_name')
-                                       ->join('news_categories', 'news_categories.id = news.category_id', 'left')
-                                       ->orderBy('created_at', 'DESC')
+        
+        // Filter by category if needed or search
+        $this->newsModel->select('news.*, news_categories.name as category_name')
+                        ->join('news_categories', 'news_categories.id = news.category_id', 'left');
+        
+        $category = $this->request->getGet('category');
+        if ($category) {
+            $this->newsModel->where('news_categories.slug', $category);
+        }
+
+        $search = $this->request->getGet('q');
+        if ($search) {
+            $this->newsModel->groupStart()
+                            ->like('news.title', $search)
+                            ->orLike('news.content', $search)
+                            ->groupEnd();
+        }
+
+        $data['news'] = $this->newsModel->orderBy('news.created_at', 'DESC')
                                        ->paginate(9, 'news');
         $data['pager'] = $this->newsModel->pager;
-
-        // External News (Cached for 1 hour)
-        $externalNews = cache()->get('external_news_v3');
         
-        if ($externalNews === null) {
-            $scraper = new \App\Libraries\WebScraper();
-            $db = \Config\Database::connect();
-            $sources = $db->table('scraping_sources')->where('status', 'active')->limit(3)->get()->getResultArray();
-            
-            $externalNews = [];
-            foreach ($sources as $source) {
-                try {
-                    $items = $scraper->scrap($source);
-                    foreach ($items as $item) {
-                        if (stripos($item['title'], 'Kali Baru') !== false || stripos($item['title'], 'Medan Satria') !== false || stripos($item['title'], 'Bekasi') !== false) {
-                            $externalNews[] = $item;
-                        }
-                    }
-                } catch (\Exception $e) {
-                    // Ignore errors
-                }
-            }
-            
-            // Save to cache for 3600 seconds (1 hour)
-            cache()->save('external_news_v3', $externalNews, 3600);
+        if ($this->request->isAJAX()) {
+            return view('portal/news/_list_items', $data);
         }
-        
-        $data['external_news'] = $externalNews;
-        
+
         return view('portal/news/index', $data);
     }
 

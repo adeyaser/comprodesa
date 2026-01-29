@@ -12,6 +12,7 @@ $routes->get('sitemap.xml', 'PortalController::sitemap');
 $routes->get('probe', 'ProbeScrape::index');
 $routes->get('news', 'PortalController::news');
 $routes->get('news/(:segment)', 'PortalController::newsDetail/$1');
+$routes->get('cron/scrape', 'Admin\Scraper::runAutoScrape');
 $routes->get('tourism', 'PortalController::tourism');
 $routes->get('tourism/(:segment)', 'PortalController::tourismDetail/$1');
 $routes->get('profile', 'PortalController::profile');
@@ -51,4 +52,11 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
     $routes->post('services/store', 'Admin\Services::store');
     $routes->post('services/update/(:num)', 'Admin\Services::update/$1');
     $routes->get('services/delete/(:num)', 'Admin\Services::delete/$1');
+
+    // Scraper Routes
+    $routes->get('scraper', 'Admin\Scraper::index');
+    $routes->post('scraper/create', 'Admin\Scraper::create');
+    $routes->get('scraper/delete/(:num)', 'Admin\Scraper::delete/$1');
+    $routes->get('scraper/toggle/(:num)', 'Admin\Scraper::toggle/$1');
+    $routes->get('scraper/refresh', 'Admin\Scraper::refresh');
 });

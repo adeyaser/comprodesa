@@ -22,6 +22,11 @@ class AuthController extends BaseController
         // Verify Cloudflare Turnstile
         $turnstileResponse = $this->request->getPost('cf-turnstile-response');
         $secretKey = env('turnstile.secret_key');
+
+        if (empty($secretKey)) {
+            log_message('error', 'Turnstile Secret Key is missing in .env');
+            return redirect()->back()->with('error', 'Konfigurasi keamanan tidak lengkap (Missing Secret Key).')->withInput();
+        }
         
         $ch = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -29,22 +34,31 @@ class AuthController extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'secret'   => $secretKey,
             'response' => $turnstileResponse,
-            'remoteip' => $this->request->getIPAddress(),
+            // remoteip is optional and can cause issues behind proxies/Cloudflare
         ]);
         
-        // Disable SSL verification on localhost to prevent common XAMPP issues
+        // Add timeout to prevent hanging
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        
+        // Some shared hosting need this to handle HTTPS verification correctly
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        
+        // Fallback for localhost or environments with SSL cert issues
         if (strpos(base_url(), 'localhost') !== false) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         }
         
         $response = curl_exec($ch);
+        $error = curl_error($ch);
         $outcome = json_decode($response, true);
         curl_close($ch);
 
         if (!$outcome || !isset($outcome['success']) || !$outcome['success']) {
-            // Log error for debugging if needed
-            log_message('error', 'Turnstile verification failed: ' . ($response ?: 'No response from server'));
-            return redirect()->back()->with('error', 'Verifikasi keamanan (Turnstile) gagal. Silakan coba lagi.')->withInput();
+            // Log very detailed error for the developer
+            log_message('error', 'Turnstile verification failed. Response: ' . ($response ?: 'Empty') . ' | Curl Error: ' . ($error ?: 'None'));
+            return redirect()->back()->with('error', 'Verifikasi keamanan (Turnstile) gagal. Periksa koneksi server ke Cloudflare atau pengaturan kuncinya.')->withInput();
         }
 
         $model = new \App\Models\UserModel();
